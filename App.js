@@ -1,9 +1,10 @@
 import React from 'react';
+import Book from './src/pages/Book';
 import Main from './src/pages/Main';
 
 const App = () => {
   return (
-    <Main />
+    <Book />
   );
 }
 
