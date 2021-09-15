@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Book = ({ navigation }) => {
+
+    const [title, setTitle] = useState();
+    const [description, setDescription] = useState();
+    const [photo, setPhoto] = useState();
+
+    const onSave = () => {
+        console.log('title');
+        console.log(title);
+        console.log('description');
+        console.log(description);
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.pageTitle}>Inclua seu novo livro</Text>
             <TextInput
+                value={title}
+                onChangeText={(text) => setTitle(text)}
                 style={styles.titleInput}
                 placeholder='Título'
             />
             <TextInput
+                value={description}
+                onChangeText={(text) => setDescription(text)}
                 style={styles.titleInput}
                 multiline={true}
                 numberOfLines={4}
@@ -19,7 +35,10 @@ const Book = ({ navigation }) => {
             <TouchableOpacity style={styles.cameraButton}>
                 <Icon name="photo-camera" size={30} color='#fff' />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.saveButton}>
+            <TouchableOpacity 
+                style={styles.saveButton}
+                onPress={onSave}
+            >
                 <Text style={styles.saveButtonText}>Cadastrar</Text>
             </TouchableOpacity>
             <TouchableOpacity
