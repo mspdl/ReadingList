@@ -9,10 +9,16 @@ const Book = ({ navigation }) => {
     const [photo, setPhoto] = useState();
 
     const onSave = () => {
-        console.log('title');
-        console.log(title);
-        console.log('description');
-        console.log(description);
+        console.log('title', title)
+        console.log('description', description)
+        console.log('isValid', isValid())
+    }
+
+    const isValid = () => {
+        if (title) {
+            return true;
+        }
+        return false;
     }
 
     return (
@@ -35,8 +41,8 @@ const Book = ({ navigation }) => {
             <TouchableOpacity style={styles.cameraButton}>
                 <Icon name="photo-camera" size={30} color='#fff' />
             </TouchableOpacity>
-            <TouchableOpacity 
-                style={styles.saveButton}
+            <TouchableOpacity
+                style={[styles.saveButton, !isValid() && styles.saveButtonInvalid]}
                 onPress={onSave}
             >
                 <Text style={styles.saveButtonText}>Cadastrar</Text>
@@ -88,6 +94,9 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         marginBottom: 20,
+    },
+    saveButtonInvalid: {
+        backgroundColor: '#CCC',
     },
     saveButtonText: {
         color: '#fff',
