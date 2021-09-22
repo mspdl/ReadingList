@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -8,10 +9,17 @@ const Book = ({ navigation }) => {
     const [description, setDescription] = useState();
     const [photo, setPhoto] = useState();
 
-    const onSave = () => {
-        console.log('title', title)
-        console.log('description', description)
-        console.log('isValid', isValid())
+    const onSave = async () => {
+        const id = 1;
+        const book = {
+            id,
+            title,
+            description,
+            photo
+        }
+        if (isValid()) {
+            await AsyncStorage.setItem('books', JSON.stringify(book))
+        }
     }
 
     const isValid = () => {
