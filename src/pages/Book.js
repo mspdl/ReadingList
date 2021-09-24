@@ -1,16 +1,23 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Book = ({ navigation }) => {
-
+    const [books, setBooks] = useState([]);
     const [title, setTitle] = useState();
     const [description, setDescription] = useState();
     const [photo, setPhoto] = useState();
 
+    useEffect(()=>{
+        AsyncStorage.getItem("books").then(data => {
+            const bookList = data ? JSON.parse(data) : [];
+            setBooks(bookList)
+        });
+    },[])
+
     const onSave = async () => {
-        const id = 1;
+        const id = Math.random().toString(36).substr(2, 9).toUpperCase();
         const book = {
             id,
             title,
@@ -18,7 +25,8 @@ const Book = ({ navigation }) => {
             photo
         }
         if (isValid()) {
-            await AsyncStorage.setItem('books', JSON.stringify(book))
+            books.push(book)
+            await AsyncStorage.setItem('books', JSON.stringify(books))
             navigation.goBack();
         }
     }

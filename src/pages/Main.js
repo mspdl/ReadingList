@@ -9,9 +9,10 @@ const Main = ({ navigation }) => {
 
     useEffect(()=>{
         AsyncStorage.getItem("books").then(data => {
-            const book = JSON.parse(data)
-            setBooks([book])
+            const bookList = data ? JSON.parse(data) : [];
+            setBooks(bookList)
         });
+        console.log('books', books)
     },[])
 
     return (
