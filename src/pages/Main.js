@@ -1,31 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Main = ({ navigation }) => {
-    const bookList = [
-        {
-            id: '1',
-            title: "Clean Code",
-            anotations: "Really good!",
-            isRead: false,
-            photo: null,
-        },
-        {
-            id: '2',
-            title: "JavaScript for Dummies",
-            anotations: "Good!",
-            isRead: false,
-            photo: null,
-        },
-        {
-            id: '3',
-            title: "PHP Bible",
-            anotations: "Nice!",
-            isRead: false,
-            photo: null,
-        },
-    ]
+    const [books, setBooks] = useState([]);
+
+    useEffect(()=>{
+        AsyncStorage.getItem("books").then(data => {
+            const book = JSON.parse(data)
+            setBooks([book])
+        });
+    },[])
 
     return (
         <View style={styles.container}>
@@ -41,7 +28,7 @@ const Main = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             <FlatList
-                data={bookList}
+                data={books}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
                     <TouchableOpacity style={styles.itemButton}>

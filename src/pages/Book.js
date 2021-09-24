@@ -19,6 +19,7 @@ const Book = ({ navigation }) => {
         }
         if (isValid()) {
             await AsyncStorage.setItem('books', JSON.stringify(book))
+            navigation.goBack();
         }
     }
 
