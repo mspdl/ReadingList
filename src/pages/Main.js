@@ -7,13 +7,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Main = ({ navigation }) => {
     const [books, setBooks] = useState([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         AsyncStorage.getItem("books").then(data => {
             const bookList = data ? JSON.parse(data) : [];
             setBooks(bookList)
         });
-        console.log('books', books)
-    },[])
+    }, [])
+
+    const onNewBook = () => {
+        navigation.navigate('Book')
+    }
+
+    const onBookEdit = (bookId) => {
+        const book = books.find(b => b.id === bookId);
+        navigation.navigate('Book', { book: book, isEdit: true })
+    }
 
     return (
         <View style={styles.container}>
@@ -21,9 +29,7 @@ const Main = ({ navigation }) => {
                 <Text style={styles.title}>Lista de Leitura</Text>
                 <TouchableOpacity
                     style={styles.addButton}
-                    onPress={() => {
-                        navigation.navigate('Book')
-                    }}
+                    onPress={onNewBook}
                 >
                     <Icon name="add" size={30} color="#fff" />
                 </TouchableOpacity>
@@ -32,9 +38,14 @@ const Main = ({ navigation }) => {
                 data={books}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.itemButton}>
-                        <Text style={styles.itemText}>{item.title}</Text>
-                    </TouchableOpacity>
+                    <View style={styles.itemsContainer}>
+                        <TouchableOpacity style={styles.itemButton}>
+                            <Text style={styles.itemText}>{item.title}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.editButton} onPress={() => onBookEdit(item.id)}>
+                            <Icon name="create" size={30} color="#2ecc71" />
+                        </TouchableOpacity>
+                    </View>
                 )}
             />
         </View>
@@ -63,13 +74,19 @@ const styles = StyleSheet.create({
         height: 45,
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 10
+        margin: 10,
+    },
+    itemsContainer: {
+        flexDirection: "row",
     },
     itemButton: {
-
+        flex: 1,
     },
     itemText: {
         fontSize: 16,
+    },
+    editButton: {
+
     }
 });
 

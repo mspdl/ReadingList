@@ -4,29 +4,52 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Book = ({ navigation }) => {
-    const [books, setBooks] = useState([]);
-    const [title, setTitle] = useState();
-    const [description, setDescription] = useState();
-    const [photo, setPhoto] = useState();
+    const book = navigation.getParam("book", {
+        title: '',
+        description: '',
+        read: false,
+        photo: ''
+    })
 
-    useEffect(()=>{
+    const isEdit = navigation.getParam("isEdit", false);
+
+    const [books, setBooks] = useState([]);
+    const [title, setTitle] = useState(book.title);
+    const [description, setDescription] = useState(book.description);
+    const [photo, setPhoto] = useState(book.photo);
+    const [read, setRead] = useState(book.read);
+
+    useEffect(() => {
         AsyncStorage.getItem("books").then(data => {
             const bookList = data ? JSON.parse(data) : [];
             setBooks(bookList)
         });
-    },[])
+    }, [])
 
     const onSave = async () => {
-        const id = Math.random().toString(36).substr(2, 9).toUpperCase();
-        const book = {
-            id,
-            title,
-            description,
-            photo
-        }
         if (isValid()) {
-            books.push(book)
-            await AsyncStorage.setItem('books', JSON.stringify(books))
+            if (isEdit) {
+                let newBooks = books;
+                newBooks.map((item) => {
+                    if (item.id === book.id) {
+                        item.title = title;
+                        item.description = description;
+                        item.photo = photo;
+                        item.read = read;
+                    }
+                    return item;
+                });
+                await AsyncStorage.setItem('books', JSON.stringify(newBooks))
+            } else {
+                const data = {
+                    id: Math.random().toString(36).substr(2, 9).toUpperCase(),
+                    title,
+                    description,
+                    photo
+                }
+                books.push(data)
+                await AsyncStorage.setItem('books', JSON.stringify(books))
+            }
             navigation.goBack();
         }
     }
@@ -62,7 +85,7 @@ const Book = ({ navigation }) => {
                 style={[styles.saveButton, !isValid() && styles.saveButtonInvalid]}
                 onPress={onSave}
             >
-                <Text style={styles.saveButtonText}>Cadastrar</Text>
+                <Text style={styles.saveButtonText}>{isEdit ? 'Atualizar' : 'Cadastrar'}</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.cancelButton}
