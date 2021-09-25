@@ -1,7 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Main = ({ navigation }) => {
@@ -21,6 +21,12 @@ const Main = ({ navigation }) => {
     const onBookEdit = (bookId) => {
         const book = books.find(b => b.id === bookId);
         navigation.navigate('Book', { book: book, isEdit: true })
+    }
+
+    const onBookDelete = async (bookId) => {
+        const newBooks = books.filter(item => item.id !== bookId);
+        await AsyncStorage.setItem("books", JSON.stringify(newBooks));
+        setBooks(newBooks);
     }
 
     return (
@@ -44,6 +50,9 @@ const Main = ({ navigation }) => {
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.editButton} onPress={() => onBookEdit(item.id)}>
                             <Icon name="create" size={30} color="#2ecc71" />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.deleteButton} onPress={() => onBookDelete(item.id)}>
+                            <Icon name="delete" size={30} color="#e74c3c" />
                         </TouchableOpacity>
                     </View>
                 )}
@@ -85,9 +94,8 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 16,
     },
-    editButton: {
-
-    }
+    editButton: {},
+    deleteButton: {},
 });
 
 export default Main;
